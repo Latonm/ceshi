@@ -14,7 +14,7 @@
             margin: 20px 0;
         }
 
-        video {
+        iframe {
             border: 1px solid #ddd;
             border-radius: 10px;
             max-width: 90%;
@@ -28,19 +28,15 @@
     <!-- 视频 1 -->
     <div class="video-container">
         <h2>video 1</h2>
-        <video id="video1" poster="https://i.ytimg.com/vi/OrJddq-DKUA/maxresdefault.jpg" controls>
-            <source src="https://www.youtube.com/watch?v=OrJddq-DKUA&t=109s" type="video/mp4">
-            <p>你的浏览器不支持 HTML 视频。</p>
-        </video>
-    </div>
-
-    <!-- 视频 2 -->
-    <div class="video-container">
-        <h2>video 2</h2>
-        <video id="video2" poster="d:\网站测试\ceshi\素材\maxresdefault.jpg" controls>
-            <source src="d:\网站测试\ceshi\素材\Vol.130 北斗卫星为你做了什么？.mp4" type="video/mp4">
-            <p>你的浏览器不支持 HTML 视频。</p>
-        </video>
+        <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/OrJddq-DKUA?start=109"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
     </div>
 </body>
 </html>
