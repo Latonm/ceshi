@@ -1,0 +1,80 @@
+/* 全局设置 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* 导航栏样式 */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 视频部分 */
+#video {
+    margin-top: 20px;
+}
+
+video {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* 按钮样式 */
+.controls {
+    margin-top: 15px;
+}
+
+.controls button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+/* 页脚样式 */
+footer {
+    margin-top: auto;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    background-color: #f4f4f4;
+    font-size: 0.9rem;
+    color: #555;
+}
