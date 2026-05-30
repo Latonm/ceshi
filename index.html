@@ -1,55 +1,485 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试</title>
+    <title>科技與空間影音專題展示</title>
+    <!-- 引入 Tailwind CSS 進行現代化 UI 設計 -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+        /* 客製化滾動條樣式，使其符合深色科技感 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        .video-container {
-            margin: 20px 0;
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
         }
-
-        iframe {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            max-width: 90%;
-            height: auto;
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* 霓虹發光效果 */
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
         }
     </style>
 </head>
-<body>
-    <h1>测试</h1>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
 
-    <!-- 视频 1 -->
-    <div class="video-container">
-        <h2>video 1</h2>
-        <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/OrJddq-DKUA?start=109"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-        </iframe>
-    </div>
+    <!-- 頂部導覽列 -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- 衛星/太空風格的 SVG 圖示 -->
+                <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a2 2 0 01-4 0V4zM18.5 2.5a2.121 2.121 0 113 3L20 7l-3-3 1.5-1.5zM15 15l-3-3m0 0l-3-3m3 3l3-3m-3 3l-3 3M14 14l3.5 3.5a2.5 2.5 0 11-3.5 3.5L14 14z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wider bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">SPACE-TECH</h1>
+                    <p class="text-xs text-slate-400">科技與空間影音專案</p>
+                </div>
+            </div>
+            
+            <!-- 搜尋框 -->
+            <div class="relative hidden sm:block w-64">
+                <input type="text" id="searchInput" oninput="searchVideos()" placeholder="搜尋專題影片..." class="w-full bg-slate-800 border border-slate-700 text-sm rounded-full py-1.5 pl-9 pr-4 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                <div class="absolute left-3 top-2 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <!-- 视频 2 -->
-    <div class="video-container">
-        <h2>video 2</h2>
-        <iframe
-            width="560"
-            height="315"
-            src="https://player.bilibili.com/player.html?bvid=BV1Qm421H7m7&high_quality=1&autoplay=0"
-            scrolling="no"
-            frameborder="0"
-            allowfullscreen="true">
-        </iframe>
-    </div>
+    <!-- 主內容區 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <!-- 頂部宣傳文字 -->
+        <div class="mb-8">
+            <span class="px-3 py-1 text-xs font-semibold tracking-wider text-indigo-400 uppercase bg-indigo-950/50 border border-indigo-900 rounded-full">影音專題精選</span>
+            <h2 class="text-3xl font-extrabold text-white mt-2 tracking-tight sm:text-4xl">北斗衛星導航與前沿科技</h2>
+            <p class="mt-2 text-lg text-slate-400">深入探索北斗導航衛星如何改變我們的生活，以及更多精選科學技術影音紀錄。</p>
+        </div>
+
+        <!-- 影音播放版面：左側播放器與詳細資訊，右側播放清單 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 左側：主播放器 -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- 響應式 iframe 封裝容器 -->
+                <div class="relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden neon-glow aspect-video w-full">
+                    <iframe 
+                        id="mainPlayer"
+                        class="absolute top-0 left-0 w-full h-full"
+                        src="https://www.youtube.com/embed/OrJddq-DKUA" 
+                        title="Vol.130 北斗衛星為你做了什麼？" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <!-- 影片詳細資訊卡片 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <span id="videoCategory" class="px-2.5 py-0.5 rounded-md text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">科普專題</span>
+                            <h3 id="videoTitle" class="text-xl sm:text-2xl font-bold text-white mt-2">Vol.130 北斗衛星為你做了什麼？</h3>
+                        </div>
+                        
+                        <!-- 互動操作按鈕 -->
+                        <div class="flex items-center space-x-2">
+                            <button onclick="toggleLike()" id="likeBtn" class="flex items-center space-x-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-sm font-medium rounded-full border border-slate-700 transition-all text-slate-300">
+                                <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="likeIcon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                <span id="likeText">按讚 (1,248)</span>
+                            </button>
+                            <button onclick="toggleFavorite()" id="favBtn" class="flex items-center space-x-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-sm font-medium rounded-full border border-slate-700 transition-all text-slate-300">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="favIcon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.367 1.25.582 1.81l-3.97 2.88a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.88a1 1 0 00-1.175 0l-3.97 2.88c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.88c-.784-.57-.381-1.81.582-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"></path></svg>
+                                <span id="favText">收藏</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-800">
+
+                    <!-- 影片簡介 -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">影片簡介</h4>
+                        <p id="videoDesc" class="text-slate-300 text-sm leading-relaxed">
+                            深入解析北斗衛星導航系統的發展歷程、技術原理，以及它在日常生活中如何默默為我們提供精確的定位與服務。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 互動式學習筆記功能 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        影音隨手記 (本機儲存)
+                    </h3>
+                    <div class="space-y-3">
+                        <textarea id="noteInput" rows="3" placeholder="在這邊寫下觀看重點、時間戳記或心得..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"></textarea>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-500">筆記將自動保存在此瀏覽器中。</span>
+                            <button onclick="saveNote()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-xs font-semibold rounded-lg text-white transition-all shadow-lg shadow-indigo-600/20">
+                                儲存筆記
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 已保存的筆記列表 -->
+                    <div id="notesContainer" class="mt-4 space-y-2 max-h-40 overflow-y-auto pr-1">
+                        <!-- 動態插入筆記 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側：播放清單 -->
+            <div class="space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            專題播放清單
+                        </h3>
+                        <span id="playlistCount" class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">3 部影片</span>
+                    </div>
+
+                    <!-- 搜尋列（手機版顯示） -->
+                    <div class="relative sm:hidden mb-4">
+                        <input type="text" id="searchInputMobile" oninput="searchVideosMobile()" placeholder="搜尋影片..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-xl py-2 pl-9 pr-4 text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <div class="absolute left-3 top-2.5 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- 播放清單列表容器 -->
+                    <div id="playlist" class="space-y-3">
+                        <!-- 動態生成播放卡片 -->
+                    </div>
+                </div>
+
+                <!-- 資訊說明小卡 -->
+                <div class="bg-gradient-to-br from-indigo-950/40 to-slate-900 border border-slate-800/80 rounded-2xl p-5 space-y-3">
+                    <h4 class="font-bold text-indigo-300 text-sm flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        播放小提醒
+                    </h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        YouTube 與 Bilibili 的播放器各自具有獨特功能。點擊清單項目即可自動加載至中央大螢幕播放。原 Bilibili 播放器為靜態網頁引入，已重新完美嵌入並進行樣式調優。
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 底部資訊 -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-6 mt-12 text-center text-xs text-slate-500">
+        <p>© 2026 科技與空間影音專題展示 | Designed with ❤️ & Tailwind CSS</p>
+    </footer>
+
+    <!-- 核心互動邏輯 JavaScript -->
+    <script>
+        // 影片資料陣列
+        const videoData = [
+            {
+                id: "vid_01",
+                title: "Vol.130 北斗衛星為你做了什麼？",
+                category: "科普專題",
+                desc: "深入解析北斗衛星導航系統的發展歷程、技術原理，以及它在日常生活中如何默默為我們提供精確的定位與服務。",
+                type: "youtube",
+                src: "https://www.youtube.com/embed/OrJddq-DKUA",
+                // 採用 YouTube 官方高畫質縮圖
+                thumbnail: "https://img.youtube.com/vi/OrJddq-DKUA/hqdefault.jpg",
+                duration: "07:49",
+                likes: 1248,
+                isLiked: false,
+                isFav: false
+            },
+            {
+                id: "vid_02",
+                title: "北斗衛星導航系統精華 (109 秒開始)",
+                category: "精華片段",
+                desc: "此為精華片段切片，網頁已預設設定自動定位於第 109 秒（1 分 49 秒）處播放，帶您直擊核心畫面與關鍵技術介紹。",
+                type: "youtube",
+                src: "https://www.youtube.com/embed/OrJddq-DKUA?start=109",
+                thumbnail: "https://img.youtube.com/vi/OrJddq-DKUA/mqdefault.jpg",
+                duration: "精華片段",
+                likes: 582,
+                isLiked: false,
+                isFav: false
+            },
+            {
+                id: "vid_03",
+                title: "Bilibili 精選影片 (BV1Qm421H7m7)",
+                category: "社群推薦",
+                desc: "整合自 Bilibili 平台的高畫質影音內容。本播放器支持彈幕（若平台提供）及高畫質自動切換，是學習前沿科技不可多得的優質資源。",
+                type: "bilibili",
+                src: "https://player.bilibili.com/player.html?bvid=BV1Qm421H7m7&high_quality=1&autoplay=0",
+                thumbnail: "bilibili", // Bilibili 使用 SVG 縮圖作為替代
+                duration: "熱門推薦",
+                likes: 914,
+                isLiked: false,
+                isFav: false
+            }
+        ];
+
+        // 當前選中播放的影片 ID
+        let currentVideoId = "vid_01";
+
+        // 初始化播放清單
+        function initPlaylist() {
+            renderPlaylist(videoData);
+            loadVideoDetails(currentVideoId);
+            loadNotes();
+        }
+
+        // 渲染播放清單
+        function renderPlaylist(videos) {
+            const playlistContainer = document.getElementById("playlist");
+            playlistContainer.innerHTML = "";
+
+            if (videos.length === 0) {
+                playlistContainer.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 text-sm">
+                        找不到符合搜尋的影片
+                    </div>
+                `;
+                return;
+            }
+
+            videos.forEach(video => {
+                const isActive = video.id === currentVideoId;
+                const activeClass = isActive 
+                    ? "border-indigo-500 bg-indigo-950/40 ring-1 ring-indigo-500/30" 
+                    : "border-slate-800 bg-slate-950/40 hover:bg-slate-800/50 hover:border-slate-700";
+
+                // 產生縮圖 HTML
+                let thumbHTML = "";
+                if (video.thumbnail === "bilibili") {
+                    // 自製科技感 Bilibili 風格 SVG 縮圖
+                    thumbHTML = `
+                        <div class="w-full h-full bg-gradient-to-br from-pink-600 to-indigo-800 flex flex-col items-center justify-center p-2 rounded-lg">
+                            <span class="text-white font-bold text-xs">BILIBILI</span>
+                            <span class="text-[10px] text-pink-200 mt-1">互動影音</span>
+                        </div>
+                    `;
+                } else {
+                    thumbHTML = `
+                        <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors rounded-lg flex items-center justify-center">
+                            <!-- 播放按鈕圖示 -->
+                            <svg class="w-6 h-6 text-white opacity-80 group-hover:opacity-100 transform group-hover:scale-110 transition-all" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                        </div>
+                    `;
+                }
+
+                const itemHTML = `
+                    <div onclick="selectVideo('${video.id}')" class="group flex p-2 rounded-xl border ${activeClass} cursor-pointer transition-all gap-3">
+                        <div class="relative w-28 h-16 flex-shrink-0 overflow-hidden rounded-lg">
+                            ${thumbHTML}
+                            <span class="absolute bottom-1 right-1 bg-black/70 text-[10px] text-slate-200 px-1 py-0.2 rounded font-mono">${video.duration}</span>
+                        </div>
+                        <div class="flex flex-col justify-between overflow-hidden">
+                            <h4 class="text-sm font-semibold text-slate-200 line-clamp-2 leading-tight group-hover:text-indigo-400 transition-colors">${video.title}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.2 rounded">${video.category}</span>
+                                <span class="text-[10px] text-slate-500 uppercase flex items-center gap-0.5">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                    ${video.type}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                playlistContainer.insertAdjacentHTML("beforeend", itemHTML);
+            });
+        }
+
+        // 切換影片事件
+        function selectVideo(id) {
+            currentVideoId = id;
+            
+            // 更新播放器與細節
+            const video = videoData.find(v => v.id === id);
+            if (video) {
+                // 平滑切換 iframe src
+                const player = document.getElementById("mainPlayer");
+                player.src = video.src;
+                player.title = video.title;
+
+                loadVideoDetails(id);
+            }
+
+            // 重新渲染清單以套用 active 狀態
+            const query = document.getElementById("searchInput").value || document.getElementById("searchInputMobile").value;
+            if (query) {
+                filterAndRender(query);
+            } else {
+                renderPlaylist(videoData);
+            }
+        }
+
+        // 載入當前影片的詳細資訊與按鈕狀態
+        function loadVideoDetails(id) {
+            const video = videoData.find(v => v.id === id);
+            if (!video) return;
+
+            document.getElementById("videoCategory").innerText = video.category;
+            document.getElementById("videoTitle").innerText = video.title;
+            document.getElementById("videoDesc").innerText = video.desc;
+
+            // 更新按讚狀態
+            const likeBtn = document.getElementById("likeBtn");
+            const likeText = document.getElementById("likeText");
+            const likeIcon = document.getElementById("likeIcon");
+            if (video.isLiked) {
+                likeBtn.classList.add("bg-rose-950/30", "border-rose-500/50", "text-rose-400");
+                likeBtn.classList.remove("bg-slate-800", "border-slate-700", "text-slate-300");
+                likeIcon.setAttribute("fill", "currentColor");
+                likeText.innerText = `已按讚 (${video.likes + 1})`;
+            } else {
+                likeBtn.classList.remove("bg-rose-950/30", "border-rose-500/50", "text-rose-400");
+                likeBtn.classList.add("bg-slate-800", "border-slate-700", "text-slate-300");
+                likeIcon.setAttribute("fill", "none");
+                likeText.innerText = `按讚 (${video.likes})`;
+            }
+
+            // 更新收藏狀態
+            const favBtn = document.getElementById("favBtn");
+            const favText = document.getElementById("favText");
+            const favIcon = document.getElementById("favIcon");
+            if (video.isFav) {
+                favBtn.classList.add("bg-amber-950/30", "border-amber-500/50", "text-amber-400");
+                favBtn.classList.remove("bg-slate-800", "border-slate-700", "text-slate-300");
+                favIcon.setAttribute("fill", "currentColor");
+                favText.innerText = `已收藏`;
+            } else {
+                favBtn.classList.remove("bg-amber-950/30", "border-amber-500/50", "text-amber-400");
+                favBtn.classList.add("bg-slate-800", "border-slate-700", "text-slate-300");
+                favIcon.setAttribute("fill", "none");
+                favText.innerText = `收藏`;
+            }
+        }
+
+        // 搜尋篩選邏輯
+        function searchVideos() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            document.getElementById("searchInputMobile").value = query; // 同步手機版搜尋框
+            filterAndRender(query);
+        }
+
+        function searchVideosMobile() {
+            const query = document.getElementById("searchInputMobile").value.toLowerCase();
+            document.getElementById("searchInput").value = query; // 同步電腦版搜尋框
+            filterAndRender(query);
+        }
+
+        function filterAndRender(query) {
+            const filtered = videoData.filter(v => 
+                v.title.toLowerCase().includes(query) || 
+                v.desc.toLowerCase().includes(query) ||
+                v.category.toLowerCase().includes(query)
+            );
+            renderPlaylist(filtered);
+            document.getElementById("playlistCount").innerText = `${filtered.length} 部影片`;
+        }
+
+        // 按讚切換
+        function toggleLike() {
+            const video = videoData.find(v => v.id === currentVideoId);
+            if (video) {
+                video.isLiked = !video.isLiked;
+                loadVideoDetails(currentVideoId);
+            }
+        }
+
+        // 收藏切換
+        function toggleFavorite() {
+            const video = videoData.find(v => v.id === currentVideoId);
+            if (video) {
+                video.isFav = !video.isFav;
+                loadVideoDetails(currentVideoId);
+            }
+        }
+
+        // ======= 隨手記（筆記功能）=======
+        const STORAGE_KEY = "space_tech_video_notes";
+
+        function saveNote() {
+            const input = document.getElementById("noteInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const notes = getNotesFromStorage();
+            const newNote = {
+                id: Date.now().toString(),
+                videoId: currentVideoId,
+                videoTitle: videoData.find(v => v.id === currentVideoId).title,
+                content: text,
+                time: new Date().toLocaleString("zh-TW", { hour12: false })
+            };
+
+            notes.unshift(newNote); // 新增在最上方
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+            input.value = "";
+            renderNotes();
+        }
+
+        function getNotesFromStorage() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function deleteNote(id) {
+            let notes = getNotesFromStorage();
+            notes = notes.filter(n => n.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+            renderNotes();
+        }
+
+        function renderNotes() {
+            const container = document.getElementById("notesContainer");
+            container.innerHTML = "";
+            const notes = getNotesFromStorage();
+
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <p class="text-xs text-slate-500 text-center py-4">目前還沒有任何筆記。</p>
+                `;
+                return;
+            }
+
+            notes.forEach(note => {
+                const noteHTML = `
+                    <div class="bg-slate-950/60 border border-slate-850 p-3 rounded-xl space-y-1 relative group">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] text-indigo-400 font-semibold truncate max-w-[70%]">${note.videoTitle}</span>
+                            <span class="text-[10px] text-slate-500">${note.time}</span>
+                        </div>
+                        <p class="text-xs text-slate-200 whitespace-pre-wrap leading-relaxed">${note.content}</p>
+                        <button onclick="deleteNote('${note.id}')" class="absolute right-2 bottom-2 text-slate-500 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+                container.insertAdjacentHTML("beforeend", noteHTML);
+            });
+        }
+
+        function loadNotes() {
+            renderNotes();
+        }
+
+        // 初始化
+        window.onload = function() {
+            initPlaylist();
+        };
+    </script>
 </body>
 </html>
